@@ -1,0 +1,97 @@
+/* src/Login.css */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-image: url("/src/images/backgroundpicture.jpg");
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.welcome-message {
+  font-size: 32px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.login-box {
+  background-color: white;
+  color: black;
+  max-width: 30rem; /* Ensure it doesn't exceed 30rem */
+  width: 100%; /* Make it responsive */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  box-sizing: border-box; /* Include padding in width */
+  margin-bottom: 10px;
+}
+
+.login-box h2 {
+  margin-bottom: 40px;
+  font-size: 24px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #2c2c5b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px; /* Add margin for spacing */
+}
+
+.login-button:hover {
+  background-color: #1b1b40;
+}
+
+.signup-text {
+  margin-top: 20px;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap; /* Ensures the text stays on one line */
+}
+
+.signup-text .signup-link {
+  margin-left: 5px; /* Add space between text and link */
+}
+
+.signup-link {
+  background: none;
+  border: none;
+  color: #2c2c5b;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline initially */
+  outline: none; /* Remove outline when focused */
+}
+
+.signup-link:hover,
+.signup-link:focus {
+  text-decoration: underline; /* Show underline on hover and focus */
+}

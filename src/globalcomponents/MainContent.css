@@ -1,0 +1,44 @@
+/* MainContent.css */
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: white;
+  overflow: auto; /* Ensure main content scrolls if content overflows */
+}
+
+.main-content h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333; /* Dark text color */
+}
+
+.main-content p {
+  margin-bottom: 10px;
+  line-height: 1.6; /* Improved readability with increased line height */
+}
+
+.main-content .card {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+}
+
+.main-content .card h2 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #555; /* Slightly darker text color */
+}
+
+.main-content .card p {
+  margin-bottom: 5px;
+}
+
+@media (max-width: 767px) {
+  .main-content {
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
+}

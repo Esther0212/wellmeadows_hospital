@@ -1,0 +1,56 @@
+/* TopPanel.css */
+
+.top-panel {
+  background-color: #e0ebf9;
+  padding: 10px; /* Changed from 5px to 20px for consistency */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between; /* Align items at opposite ends */
+  align-items: center; /* Center vertically */
+}
+
+.top-panel h2 {
+  margin: 0; /* Ensure no margin */
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Make the image circular */
+  margin-left: auto; /* Pushes the avatar to the right */
+  margin-right: 1em; /* Add some margin to separate from the content */
+}
+
+.greeting-text {
+  display: flex;
+  align-items: center;
+}
+
+.staff-num {
+  color: #f1aa04; /* Color for staff number */
+}
+
+.avatar-info {
+  color: black; /* Text color for avatar info */
+  margin-left: 10px; /* Add some space between avatar and text */
+  margin-right: 2em; /* Right margin for avatar info */
+}
+
+.user-avatar-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar-button:focus {
+  outline: none;
+  /* Add any specific hover styles if needed */
+}
+
+.user-avatar-button:hover,
+.avatar-info:hover {
+  text-decoration: underline;
+  color: #aeaeae; /* Color on hover */
+}

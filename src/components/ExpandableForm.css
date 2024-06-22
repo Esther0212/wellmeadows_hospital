@@ -1,0 +1,62 @@
+.expandable-form {
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: height 0.3s ease;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.expandable-header {
+  padding: 10px;
+  cursor: pointer;
+  user-select: none;
+  background-color: #029def;
+}
+
+.expandable-content {
+  padding: 10px;
+  display: none;
+}
+
+.expandable-form.expanded .expandable-content {
+  display: block;
+}
+
+.form-content {
+  margin-top: -2px;
+}
+
+.form-content date {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-content label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.form-content input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.form-content input[type="date"]::before {
+  content: attr(placeholder);
+  color: transparent;
+  content: "";
+}
+
+.form-content input[type="date"]:focus::before {
+  content: "";
+}
+
+.form-content input:focus {
+  outline: none;
+  border-color: #0277bd;
+}

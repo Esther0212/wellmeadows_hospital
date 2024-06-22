@@ -1,0 +1,21 @@
+.dashboard-container {
+  display: flex;
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+}
+
+.about-us-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 7%;
+  padding-right: 7%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100vh; /* Full viewport height */
+}

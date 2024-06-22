@@ -1,0 +1,110 @@
+.side-panel {
+  background-color: #292b54;
+  color: white;
+  padding: 20px;
+  overflow: auto; /* Ensure side panel scrolls if content overflows */
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ensure side panel takes full height of viewport */
+}
+
+.side-panel ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Ensure the ul takes up remaining space */
+}
+
+.side-panel ul li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  flex-direction: column; /* Ensure logo and text stack vertically */
+}
+
+.header-button {
+  background-color: #292b54;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.header-button h2 {
+  color: white;
+}
+
+.menu-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 0;
+  outline: none; /* Remove default outline */
+}
+
+.menu-button:focus {
+  outline: none; /* Remove outline on focus */
+  background-color: #1b1b40;
+}
+
+.menu-button:hover {
+  background-color: #aeaeae;
+}
+
+.menu-button.clicked {
+  background-color: #1b1b40; /* Apply the active background color */
+}
+
+.side-panel ul li img.logo {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 10px; /* Adjust margin to align with the horizontal line */
+  margin-top: 10px;
+}
+
+.side-panel ul li img.menu-icon,
+.menu-button.logout-button img.menu-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.side-panel h2 {
+  margin: 5px;
+  position: relative; /* Position relative for absolute line */
+  text-align: center;
+}
+
+.side-panel .line {
+  border: none;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.3); /* Faint white color */
+  margin-top: 5px; /* Adjust distance from text */
+  width: 100%; /* Make sure the line spans the width of the container */
+}
+
+.side-panel h2:hover {
+  color: #aeaeae;
+  text-decoration: underline;
+}
+
+.menu-button.logout-button {
+  margin-top: 10px; /* Push the logout button to the bottom */
+  margin-bottom: 40px;
+}
+
+.staff-num {
+  color: #f1aa04;
+}
+
+.menu-button p {
+  font-size: 15px;
+  margin: auto;
+  margin-left: 30px;
+}

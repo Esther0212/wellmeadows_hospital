@@ -1,0 +1,213 @@
+/* Dashboard.css */
+
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  overflow: hidden; /* Prevent overflow */
+}
+
+.side-panel {
+  background-color: #292b54;
+  color: white;
+  padding: 20px;
+  overflow: auto; /* Ensure side panel scrolls if content overflows */
+}
+
+.side-panel ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-panel ul li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  flex-direction: column; /* Ensure logo and text stack vertically */
+}
+
+.menu-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 0;
+  outline: none; /* Remove default outline */
+}
+
+.menu-button:focus {
+  outline: none; /* Remove outline on focus */
+  background-color: #1b1b40;
+}
+
+.menu-button:hover {
+  background-color: #aeaeae;
+}
+
+.menu-button.clicked {
+  background-color: #1b1b40; /* Apply the active background color */
+}
+
+.side-panel ul li img.logo {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 10px; /* Adjust margin to align with the horizontal line */
+  margin-top: 10px;
+}
+
+.side-panel ul li img.menu-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.side-panel h2 {
+  margin: 5px;
+  position: relative; /* Position relative for absolute line */
+  text-align: center;
+}
+
+.side-panel .line {
+  border: none;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.3); /* Faint white color */
+  margin-top: 5px; /* Adjust distance from text */
+  width: 100%; /* Make sure the line spans the width of the container */
+}
+
+.side-panel h2:hover {
+  color: #aeaeae;
+  text-decoration: underline;
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: auto; /* Ensure content area scrolls if content overflows */
+}
+
+.top-panel {
+  background-color: #e0ebf9;
+  padding: 20px; /* Changed from 5px to 20px for consistency */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between; /* Align items at opposite ends */
+  align-items: center; /* Center vertically */
+}
+
+.top-panel h2 {
+  margin: 0; /* Ensure no margin */
+}
+
+.user-avatar-button {
+  margin: 0%;
+  padding: 0%;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Make the image circular */
+  margin-left: auto; /* Pushes the avatar to the right */
+  margin-right: 1em; /* Add some margin to separate from the content */
+}
+
+.greeting-text {
+  display: flex;
+  align-items: center;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: white;
+  overflow: auto; /* Ensure main content scrolls if content overflows */
+}
+
+.staff-num {
+  color: #f1aa04;
+}
+
+.avatar-info {
+  color: black; /* Ensure text color is black */
+  margin-left: 10px; /* Add some space between avatar and text */
+  margin-right: 2em;
+}
+
+.user-avatar-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar-button:focus {
+  outline: none;
+}
+
+.user-avatar-button:hover {
+  text-decoration: underline;
+}
+
+.avatar-info:hover {
+  text-decoration: underline;
+  color: #aeaeae;
+}
+
+.file-upload-container {
+  margin-bottom: 30px;
+  margin-left: 40%;
+  margin-right: auto;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  background-color: #1976d2;
+  color: white;
+  font-size: 12px;
+  padding: 10px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 8.5%;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .dashboard-container {
+    flex-direction: row;
+  }
+
+  .side-panel {
+    width: 250px;
+    height: 100vh;
+  }
+
+  .content-area {
+    flex: 1;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 767px) {
+  .side-panel {
+    width: 100%;
+  }
+
+  .content-area {
+    flex: 1;
+    flex-direction: column;
+  }
+}
