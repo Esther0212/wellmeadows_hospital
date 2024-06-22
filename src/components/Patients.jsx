@@ -75,6 +75,7 @@ const Patients = () => {
         .from("patient")
         .insert([
           {
+            patient_num,
             first_name: formData.firstName,
             last_name: formData.lastName,
             address: formData.patientAddress,
@@ -89,8 +90,6 @@ const Patients = () => {
       if (patientError) {
         throw patientError;
       }
-      const patient_num = patientData[0].patient_num;
-      fetchPatientDetails(patient_num);
 
       // Insert into clinic table
       const { data: clinicData, error: clinicError } = await supabase
@@ -257,9 +256,6 @@ const Patients = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                InputLabelProps={{
-                  shrink: true,
-                }}
               />
               <TextField
                 label="Last Name"
