@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SidePanel from "../globalcomponents/SidePanel";
 import TopPanel from "../globalcomponents/TopPanel";
 import ExpandableForm from "./ExpandableForm"; // Adjust the import path as per your project
@@ -15,17 +15,10 @@ import {
 } from "@mui/material";
 
 const Patients = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const {
-    patient_num,
-    clinic_num,
-    room_num,
-    doctor_num,
-    appointment_num,
-    staff_num,
-    first_name,
-    last_name,
-  } = location.state || {};
+  const { appointment_num, patient_num, staff_num, first_name, last_name } =
+    location.state || {};
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -75,7 +68,6 @@ const Patients = () => {
         .from("patient")
         .insert([
           {
-            patient_num,
             first_name: formData.firstName,
             last_name: formData.lastName,
             address: formData.patientAddress,
@@ -85,11 +77,15 @@ const Patients = () => {
             marital_status: formData.maritalStatus,
             date_registered: formData.dateRegistered,
           },
-        ]);
+        ])
+        .select("patient_num")
+        .single();
 
       if (patientError) {
         throw patientError;
       }
+
+      const patientNum = patientData.patient_num;
 
       // Insert into clinic table
       const { data: clinicData, error: clinicError } = await supabase
@@ -98,28 +94,36 @@ const Patients = () => {
           {
             clinic_name: formData.clinicName,
           },
-        ]);
+        ])
+        .select("clinic_num")
+        .single();
 
       if (clinicError) {
         throw clinicError;
       }
+
+      const clinicNum = clinicData.clinic_num;
 
       // Insert into localdoctor table
       const { data: localDoctorData, error: localDoctorError } = await supabase
         .from("localdoctor")
         .insert([
           {
-            patient_num,
-            clinic_num,
+            patient_num: patientNum,
+            clinic_num: clinicNum,
             full_name: formData.doctorFullName,
             address: formData.doctorAddress,
             telephone_num: formData.doctorTelephone,
           },
-        ]);
+        ])
+        .select("doctor_num")
+        .single();
 
       if (localDoctorError) {
         throw localDoctorError;
       }
+
+      const doctorNum = localDoctorData.doctor_num;
 
       // Insert into e_room table
       const { data: roomData, error: roomError } = await supabase
@@ -128,88 +132,123 @@ const Patients = () => {
           {
             room_name: formData.roomName,
           },
-        ]);
+        ])
+        .select("room_num")
+        .single();
 
       if (roomError) {
         throw roomError;
       }
 
+      const roomNum = roomData.room_num;
+
       // Insert into patientappointment table
       const { data: patientAppointmentData, error: patientAppointmentError } =
-        await supabase.from("patientappointment").insert([
-          {
-            patient_num,
-            staff_num,
-            room_num,
-            date_of_appointment: formData.dateOfAppointment,
-            time_of_appointment: formData.timeOfAppointment,
-            exam_result: formData.examResult,
-          },
-        ]);
+        await supabase
+          .from("patientappointment")
+          .insert([
+            {
+              patient_num: patientNum,
+              staff_num,
+              room_num: roomNum,
+              date_of_appointment: formData.dateOfAppointment,
+              time_of_appointment: formData.timeOfAppointment,
+              exam_result: formData.examResult,
+            },
+          ])
+          .select("appointment_num")
+          .single();
 
       if (patientAppointmentError) {
         throw patientAppointmentError;
       }
 
+      const appointmentNum = patientAppointmentData.appointment_num;
+
       // Insert into doctorreferral table
       const { data: doctorReferraltData, error: doctorReferralError } =
-        await supabase.from("doctor_referral").insert([
-          {
-            doctor_num,
-            appointment_num,
-            doctor_referral_name: formData.doctorReferralName,
-          },
-        ]);
+        await supabase
+          .from("doctor_referral")
+          .insert([
+            {
+              doctor_num: doctorNum,
+              appointment_num: appointmentNum,
+              doctor_referral_name: formData.doctorReferralName,
+            },
+          ])
+          .select("referral_num")
+          .single();
 
       if (doctorReferralError) {
         throw doctorReferralError;
       }
+
+      const referralNum = doctorReferraltData.referral_num;
 
       // Insert into nextofkin table
       const { data: nextofKinData, error: nextofKinError } = await supabase
         .from("next_of_kin")
         .insert([
           {
-            patient_num,
+            patient_num: patientNum,
             kin_fullname: formData.fullName,
             relationship: formData.relationship,
             address: formData.address,
             telephone_num: formData.telephoneNumbers,
           },
-        ]);
+        ])
+        .select("kin_num")
+        .single();
 
       if (nextofKinError) {
         throw nextofKinError;
       }
 
-      // Insert into outpatient table
-      const { data: outpatientData, error: outPatientError } = await supabase
-        .from("out_patient")
-        .insert([
-          {
-            appointment_num,
-            patient_num,
-            registration_date: formData.registrationDate,
-          },
-        ]);
+      const kinNum = nextofKinData.kin_num;
 
-      if (outPatientError) {
-        throw outPatientError;
+      // Check if examResult is Normal
+      if (formData.examResult === "Normal") {
+        // Insert into out_patient table
+        const { data: outpatientData, error: outPatientError } = await supabase
+          .from("out_patient")
+          .insert([
+            {
+              appointment_num: appointmentNum,
+              patient_num: patientNum,
+              registration_date: formData.registrationDate || null,
+            },
+          ])
+          .select("out_num")
+          .single();
+
+        if (outPatientError) {
+          throw outPatientError;
+        }
+
+        const outNum = outpatientData.out_num;
       }
 
-      // Insert into waitinglist table
-      const { data: waitinglistData, error: waitingListError } = await supabase
-        .from("waiting_list")
-        .insert([
-          {
-            patient_num,
-            appointment_num,
-            on_waiting_list: formData.onWaitingList,
-          },
-        ]);
+      // Check if examResult is Abnormal
+      if (formData.examResult === "Abnormal") {
+        // Insert into waitinglist table
+        const { data: waitinglistData, error: waitingListError } =
+          await supabase
+            .from("waiting_list")
+            .insert([
+              {
+                patient_num: patientNum,
+                appointment_num: appointmentNum,
+                on_waiting_list: formData.onWaitingList || null,
+              },
+            ])
+            .select("waiting_num")
+            .single();
 
-      if (waitingListError) {
-        throw waitingListError;
+        if (waitingListError) {
+          throw waitingListError;
+        }
+
+        const waitingNum = waitinglistData.waiting_num;
       }
 
       alert("Data inserted successfully!");
@@ -217,6 +256,9 @@ const Patients = () => {
       console.error("Error inserting data:", error.message || error);
     }
   };
+
+  const handleUpdate = async () => {};
+  const handleDelete = async () => {};
 
   return (
     <div className="dashboard-container">
@@ -520,15 +562,22 @@ const Patients = () => {
                   shrink: true,
                 }}
               />
-              <TextField
-                label="Exam Result"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                name="examResult"
-                value={formData.examResult}
-                onChange={handleChange}
-              />
+              <FormControl variant="outlined" fullWidth margin="normal">
+                <InputLabel id="exam-result-label">Exam Result</InputLabel>
+                <Select
+                  labelId="exam-result-label"
+                  name="examResult"
+                  value={formData.examResult}
+                  onChange={handleChange}
+                  label="Marital Status"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Normal">Normal</MenuItem>
+                  <MenuItem value="Abnormal">Abnormal</MenuItem>
+                </Select>
+              </FormControl>
             </form>
           </ExpandableForm>
           <ExpandableForm title="Doctor Referral Name">
@@ -603,15 +652,32 @@ const Patients = () => {
                 value={formData.fullName}
                 onChange={handleChange}
               />
-              <TextField
-                label="Relationship"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                name="relationship"
-                value={formData.relationship}
-                onChange={handleChange}
-              />
+              <FormControl variant="outlined" fullWidth margin="normal">
+                <InputLabel id="relationship-label">Relationship</InputLabel>
+                <Select
+                  labelId="relationship-label"
+                  name="relationship"
+                  value={formData.relationship}
+                  onChange={handleChange}
+                  label="Relationship"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Father">Father</MenuItem>
+                  <MenuItem value="Mother">Mother</MenuItem>
+                  <MenuItem value="Brother">Brother</MenuItem>
+                  <MenuItem value="Sister">Sister</MenuItem>
+                  <MenuItem value="Grandparent">Grandparent</MenuItem>
+                  <MenuItem value="Father-in-Law">Father-in-Law</MenuItem>
+                  <MenuItem value="Mother-in-Law">Mother-in-Law</MenuItem>
+                  <MenuItem value="Partner">Partner</MenuItem>
+                  <MenuItem value="Aunt">Aunt</MenuItem>
+                  <MenuItem value="Uncle">Uncle</MenuItem>
+                  <MenuItem value="Husband">Husband</MenuItem>
+                  <MenuItem value="Wife">Wife</MenuItem>
+                </Select>
+              </FormControl>
               <TextField
                 label="Address"
                 variant="outlined"
@@ -633,7 +699,12 @@ const Patients = () => {
             </form>
           </ExpandableForm>
 
-          <ExpandableForm title="Out Patients">
+          <ExpandableForm
+            title="Out Patients"
+            formData={formData}
+            handleChange={handleChange}
+            examResult={formData.examResult}
+          >
             <form>
               <TextField
                 label="Registration Date"
@@ -651,7 +722,12 @@ const Patients = () => {
             </form>
           </ExpandableForm>
 
-          <ExpandableForm title="Waiting List">
+          <ExpandableForm
+            title="Waiting List"
+            formData={formData}
+            handleChange={handleChange}
+            examResult={formData.examResult}
+          >
             <form>
               <TextField
                 label="On Waiting List"
@@ -669,15 +745,53 @@ const Patients = () => {
             </form>
           </ExpandableForm>
 
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={handleInsert}
-            style={{ margin: "20px auto", display: "block" }}
-          >
-            Insert
-          </Button>
+          <div style={{ display: "flex", marginBottom: "20px" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fullWidth: "100%",
+                margin: "auto",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+              onClick={handleInsert}
+            >
+              Insert
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fullWidth: "100%",
+                margin: "auto",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+              onClick={handleUpdate}
+            >
+              Update
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fullWidth: "100%",
+                margin: "auto",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          </div>
         </div>
       </div>
     </div>

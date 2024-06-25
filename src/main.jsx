@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 import { UserProvider } from "./contexts/userContext";
+import { PositionProvider } from "./contexts/PositionContext";
 import App from "./App";
 
 // Get the root DOM element where the app will be mounted
@@ -13,8 +14,10 @@ const root = createRoot(container);
 // Render the application
 root.render(
   <UserProvider>
-    <Router>
-      <App />
-    </Router>
+    <PositionProvider>
+      <Router>
+        <App />
+      </Router>
+    </PositionProvider>
   </UserProvider>
 );

@@ -1,3 +1,5 @@
+// Profile.jsx
+
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import SidePanel from "../globalcomponents/SidePanel";
@@ -20,6 +22,7 @@ const Profile = () => {
   const location = useLocation();
   const { staff_num, first_name, last_name } = location.state || {};
 
+  const [avatarUrl, setAvatarUrl] = useState(defaultUserImage);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -44,13 +47,15 @@ const Profile = () => {
     avatarImage: "",
   });
 
-  const [avatarUrl, setAvatarUrl] = useState(defaultUserImage); // Default to defaultUserImage if no avatar
-
   useEffect(() => {
     if (staff_num) {
       fetchStaffDetails(staff_num);
     }
   }, [staff_num]);
+
+  useEffect(() => {
+    console.log("Location state:", location.state);
+  }, [location.state]);
 
   const fetchStaffDetails = async (staffNumber) => {
     try {
@@ -72,15 +77,8 @@ const Profile = () => {
         }));
 
         if (data.avatar_image) {
-          const { publicURL, error: urlError } = supabase.storage
-            .from("avatars")
-            .getPublicUrl(data.avatar_image);
-
-          if (urlError) {
-            throw urlError;
-          }
-
-          setAvatarUrl(publicURL);
+          const avatarUrl = URL.createObjectURL(new Blob([data.avatar_image]));
+          setAvatarUrl(avatarUrl);
         } else {
           setAvatarUrl(defaultUserImage); // fallback to default image if no avatar is found
         }
@@ -109,10 +107,10 @@ const Profile = () => {
       reader.readAsDataURL(file);
       setFormData((prevState) => ({
         ...prevState,
-        avatarImage: file,
+        avatarImage: file, // Store the file for submission
       }));
     } else {
-      setAvatarUrl(defaultUserImage);
+      setAvatarUrl(defaultUserImage); // Fallback to default image if no file selected
       setFormData((prevState) => ({
         ...prevState,
         avatarImage: null,
@@ -120,40 +118,70 @@ const Profile = () => {
     }
   };
 
-  const handleInsert = async () => {
+  const handleUpdate = async () => {
     try {
       let avatarUrl = null;
+
+      // Check if there's an avatar image to upload
       if (formData.avatarImage) {
+        // Upload avatar image to Supabase storage
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("avatars")
-          .upload(
-            `${staff_num}/${formData.avatarImage.name}`,
-            formData.avatarImage
-          );
+          .upload(`${formData.avatarImage.name}`, formData.avatarImage);
 
         if (uploadError) {
           throw uploadError;
         }
 
-        // Get the public URL of the uploaded file
-        avatarUrl = supabase.storage
+        // Store the URL of the avatar image in the users table
+        const { publicURL } = supabase.storage
           .from("avatars")
-          .getPublicUrl(uploadData.path).publicURL;
+          .getPublicUrl(uploadData.path);
 
-        // Update user's avatar_image field with the storage path
-        const { data: updateUserData, error: updateUserError } = await supabase
-          .from("users")
-          .update({ avatar_image: `${staff_num}/${formData.avatarImage.name}` })
-          .eq("staff_num", staff_num);
-
-        if (updateUserError) {
-          throw updateUserError;
-        }
-
-        // Update state with the public URL
-        setAvatarUrl(avatarUrl);
+        avatarUrl = publicURL;
       }
 
+      // Update user's profile data including avatar image URL
+      const { data: updateUserData, error: updateUserError } = await supabase
+        .from("users")
+        .update({
+          avatar_image: avatarUrl,
+          // Add other fields to update here as needed
+        })
+        .eq("staff_num", staff_num);
+
+      if (updateUserError) {
+        throw updateUserError;
+      }
+
+      setAvatarUrl(avatarUrl || defaultUserImage); // Update avatar URL in UI
+
+      // Update staff table
+      const { data: staffData, error: staffError } = await supabase
+        .from("staff")
+        .update({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          full_address: formData.fullAddress,
+          telephone_num: formData.telephoneNumber,
+          date_of_birth: formData.dateOfBirth,
+          sex: formData.sex,
+          nin: formData.nin,
+        })
+        .eq("staff_num", staff_num); // Adding WHERE clause here
+
+      if (staffError) {
+        throw staffError;
+      }
+
+      alert("Data updated successfully!");
+    } catch (error) {
+      console.error("Error updating data:", error.message || error);
+    }
+  };
+
+  const handleInsert = async () => {
+    try {
       // Insert into position table
       const { data: positionData, error: positionError } = await supabase
         .from("position")
@@ -220,6 +248,7 @@ const Profile = () => {
           staff_num={staff_num}
           firstName={first_name}
           lastName={last_name}
+          avatarUrl={avatarUrl}
         />
 
         <div className="staff-container">
@@ -347,6 +376,23 @@ const Profile = () => {
               />
             </form>
           </ExpandableForm>
+
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              fullWidth: "100%",
+              margin: "auto",
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginBottom: "20px",
+            }}
+            onClick={handleUpdate}
+          >
+            Update
+          </Button>
 
           <ExpandableForm
             title="Contract"
@@ -565,6 +611,7 @@ const Profile = () => {
               justifyContent: "center",
               fullWidth: "100%",
               margin: "auto",
+              marginBottom: "20px",
               marginLeft: "auto",
               marginRight: "auto",
             }}

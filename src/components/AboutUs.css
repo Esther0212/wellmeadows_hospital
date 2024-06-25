@@ -13,9 +13,29 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-left: 7%;
-  padding-right: 7%;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 0 7%; /* Padding on left and right */
+  text-align: center; /* Center text */
   height: 100vh; /* Full viewport height */
+  margin: 25% auto; /* Center vertically */
+}
+
+.about-us-panel p {
+  text-align: justify; /* Justify the text inside the <p> element */
+}
+
+.about-us-panel h3 {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .about-us-panel {
+    padding: 0 5%; /* Reduce padding on smaller screens */
+  }
+}
+
+@media (max-width: 576px) {
+  .about-us-panel {
+    padding: 0 3%; /* Further reduce padding on smaller screens */
+  }
 }
