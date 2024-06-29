@@ -402,6 +402,7 @@ const Supplies = () => {
                 margin: "auto",
                 marginLeft: "auto",
                 marginRight: "auto",
+                backgroundColor: "#00A86B",
               }}
               onClick={handleUpdate}
             >
@@ -417,6 +418,7 @@ const Supplies = () => {
                 margin: "auto",
                 marginLeft: "auto",
                 marginRight: "auto",
+                backgroundColor: "#DC2941",
               }}
               onClick={handleDelete}
             >
